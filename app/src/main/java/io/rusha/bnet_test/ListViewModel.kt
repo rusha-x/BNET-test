@@ -11,7 +11,12 @@ class ListViewModel : ViewModel() {
     private val compositeDisposable = CompositeDisposable()
     val entriesLiveData = MutableLiveData<List<Entry>>()
 
-    init {
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.dispose()
+    }
+
+    fun onAppear() {
         compositeDisposable.add(
             mainApi.getEntries()
                 .subscribeOn(Schedulers.io())
@@ -25,10 +30,5 @@ class ListViewModel : ViewModel() {
                     }
                 )
         )
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        compositeDisposable.dispose()
     }
 }

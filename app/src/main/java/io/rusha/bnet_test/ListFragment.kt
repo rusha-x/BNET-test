@@ -12,10 +12,23 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         super.onViewCreated(view, savedInstanceState)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
+        val addButton = view.findViewById<View>(R.id.add_button)
 
         viewModel.entriesLiveData.observe(viewLifecycleOwner) { entries ->
             recyclerView.adapter = EntriesAdapter(entries ?: listOf())
         }
+        addButton.setOnClickListener() {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, AddFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.onAppear()
     }
 
 }
