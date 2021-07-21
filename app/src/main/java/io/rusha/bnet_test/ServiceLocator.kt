@@ -5,7 +5,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ServiceLocator {
-    private val retrofit = Retrofit.Builder()
+    private val retrofit = Retrofit.Builder().baseUrl("https://bnet.i-partner.ru/testAPI/")
         .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
         .addConverterFactory(GsonConverterFactory.create())
         .build()

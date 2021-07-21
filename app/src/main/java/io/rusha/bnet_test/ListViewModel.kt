@@ -10,6 +10,22 @@ class ListViewModel : ViewModel() {
     private val mainApi = ServiceLocator.getMainApi()
     private val compositeDisposable = CompositeDisposable()
     val entriesLiveData = MutableLiveData<List<Entry>>()
+    val isRetryShowedLiveEvent = SingleLiveEvent<Unit>()
+    var session = ""
+
+    init {
+        mainApi.newSession(token = "4x1bIe0-jS-2h7xnM2")
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { response ->
+                    session = response.data.session
+                    loadEntries()
+                },
+                { e ->
+                }
+            )
+    }
 
     override fun onCleared() {
         super.onCleared()
@@ -17,8 +33,18 @@ class ListViewModel : ViewModel() {
     }
 
     fun onAppear() {
+        if (session != ""){
+            loadEntries()
+        }
+    }
+
+    fun onRetryClick() {
+        loadEntries()
+    }
+
+    private fun loadEntries() {
         compositeDisposable.add(
-            mainApi.getEntries()
+            mainApi.getEntries( request = GetEntriesRequest(session), token = "4x1bIe0-jS-2h7xnM2")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -26,6 +52,7 @@ class ListViewModel : ViewModel() {
                         entriesLiveData.value = response.entryList()
                     },
                     { e ->
+                        isRetryShowedLiveEvent.call()
 
                     }
                 )

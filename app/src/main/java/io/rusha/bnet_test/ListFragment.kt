@@ -2,6 +2,7 @@ package io.rusha.bnet_test
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,14 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
         viewModel.entriesLiveData.observe(viewLifecycleOwner) { entries ->
             recyclerView.adapter = EntriesAdapter(entries ?: listOf())
+        }
+        viewModel.isRetryShowedLiveEvent.observe(viewLifecycleOwner) {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Интернет недоступен")
+                .setPositiveButton("Повторить", { _, _ ->
+                    viewModel.onRetryClick()
+                })
+                .show()
         }
         addButton.setOnClickListener() {
             requireActivity().supportFragmentManager.beginTransaction()

@@ -3,6 +3,7 @@ package io.rusha.bnet_test
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 
@@ -27,6 +28,14 @@ class AddFragment : Fragment(R.layout.create_entry) {
                 requireActivity().supportFragmentManager.popBackStack()
 
             }
+        }
+        viewModel.isRetryShowedLiveEvent.observe(viewLifecycleOwner) {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Интернет недоступен")
+                .setPositiveButton("Повторить", { _, _ ->
+                    viewModel.onRetryClick()
+                })
+                .show()
         }
     }
 
